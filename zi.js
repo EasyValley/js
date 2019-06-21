@@ -1,4 +1,4 @@
- var str = '{[()]}{}['
+
 
     function test(str) {
         var arr = str.split('');
