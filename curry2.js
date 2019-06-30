@@ -1,4 +1,7 @@
  function curry(fn) {
+        if (fn.length <= 1) {
+            return fn;
+        }
         return function gen(...args) {
             if (fn.length === args.length) {
                 return fn(...args)
