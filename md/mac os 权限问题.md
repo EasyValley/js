@@ -6,5 +6,6 @@
    
    在工程根目录，用这个命令来去除这个属性：
    ```bash 
+   chmod -R 777 ./
    xattr -d -r com.apple.quarantine ./* 
    ```
