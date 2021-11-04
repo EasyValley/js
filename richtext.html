@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .box {
+        height: 300px;
+        border: 1px solid red;
+        padding: 10px;
+        color: #000;
+      }
+      /* .box span {
+        display: inline-block;
+        min-width: 1px;
+        min-height: 12px;
+        font-weight: 400;
+      } */
+    </style>
+  </head>
+  <body>
+    <div>
+      <span class="red">红色</span>
+      <span class="strong">加粗</span>
+      <span class="normal">正常</span>
+    </div>
+    <div class="box" contenteditable="true"></div>
+  </body>
+</html>
+<script>
+  let range;
+  let dom = document.querySelector('.box');
+  console.log(dom, 'dom');
+  let red = document.querySelector('.red');
+  let strong = document.querySelector('.strong');
+  let normal = document.querySelector('.normal');
+  dom.onblur = function () {
+    let selection = window.getSelection();
+    range = selection.getRangeAt(0);
+  };
+
+  red.onclick = function () {
+    let span = document.createElement('span');
+    span.style.color = 'red';
+    console.log(
+      range.endContainer.parentElement,
+      'range.endContainer parentElement',
+    );
+    console.log(range.endOffset, 'range.endOffset==');
+    range.insertNode(span);
+    setPointer(span);
+  };
+
+  strong.onclick = function () {
+    let span = document.createElement('span');
+    span.style.color = 'blue';
+    console.log(
+      range.endContainer.parentElement,
+      'range.endContainer parentElement',
+    );
+    console.log(range.endOffset, 'range.endOffset==');
+    range.insertNode(span);
+    setPointer(span);
+  };
+  normal.onclick = function () {
+    let span = document.createElement('span');
+    span.style.color = '#000';
+    range.insertNode(span);
+    setPointer(span);
+  };
+  function getPointer(node) {
+    let selection = window.getSelection();
+    let range = selection.getRangeAt(0);
+    // let endContainer = range.endContainer;
+    // let endOffset = range.endOffset;
+    // range.insertNode(node);
+  }
+
+  function setPointer(span) {
+    span.innerHTML = ' ';
+    dom.focus();
+    var range2 = document.createRange();
+    range2.selectNodeContents(span);
+
+    range2.collapse(false);
+
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range2);
+  }
+</script>
