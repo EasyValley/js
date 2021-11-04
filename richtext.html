@@ -12,16 +12,11 @@
         padding: 10px;
         color: #000;
       }
-      /* .box span {
-        display: inline-block;
-        min-width: 1px;
-        min-height: 12px;
-        font-weight: 400;
-      } */
     </style>
   </head>
   <body>
     <div>
+      <div class="statistics">统计</div>
       <span class="red">红色</span>
       <span class="strong">加粗</span>
       <span class="normal">正常</span>
@@ -81,6 +76,7 @@
   function setPointer(span) {
     span.innerHTML = ' ';
     dom.focus();
+
     var range2 = document.createRange();
     range2.selectNodeContents(span);
 
@@ -89,5 +85,46 @@
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range2);
+  }
+
+  document.addEventListener('mouseup', function () {
+    let text = window.getSelection().toString();
+    console.log(text, 'text');
+  });
+
+  let statistics = document.querySelector('.statistics');
+
+  // setHtml(dom);
+  function setHtml(dom) {
+    let html = generateSpan(dom);
+    dom.innerHTML = html;
+  }
+
+  function generateSpan(dom) {
+    let nodes = dom.childNodes;
+    let list = fn(nodes, dom).flat(Infinity);
+    let html = list
+      .map((item) => {
+        if (item.color) {
+          return `<span style="color:${item.color};">${item.text}</span>`;
+        }
+        return `<span >${item.text}</span>`;
+      })
+      .join('');
+    return html;
+  }
+  function fn(list, parent) {
+    let arr = [];
+    list.forEach((item) => {
+      if (item.nodeType === 1) {
+        arr.push(fn(item.childNodes, item));
+      } else {
+        arr.push({
+          text: item.textContent,
+          color: parent.style.color,
+        });
+      }
+    });
+    return arr;
   }
 </script>
