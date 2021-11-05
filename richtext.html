@@ -31,6 +31,7 @@
   let red = document.querySelector('.red');
   let strong = document.querySelector('.strong');
   let normal = document.querySelector('.normal');
+  let focusId = 1;
   dom.onblur = function () {
     let selection = window.getSelection();
     range = selection.getRangeAt(0);
@@ -74,7 +75,7 @@
   }
 
   function setPointer(span) {
-    span.innerHTML = ' ';
+    span.innerHTML = '__focus_tag__';
     dom.focus();
 
     var range2 = document.createRange();
@@ -85,6 +86,7 @@
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range2);
+    setHtml(dom);
   }
 
   document.addEventListener('mouseup', function () {
@@ -98,6 +100,19 @@
   function setHtml(dom) {
     let html = generateSpan(dom);
     dom.innerHTML = html;
+    let id = 'focus_id_' + focusId;
+    console.log(id, 'id====');
+    let span = document.getElementById(id);
+    span.innerHTML = '&#xFEFF;';
+    // <span class="ql-cursor">&#xFEFF;</span>
+    dom.focus();
+
+    var range2 = document.createRange();
+    range2.selectNodeContents(span);
+    range2.collapse(false);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range2);
   }
 
   function generateSpan(dom) {
@@ -105,10 +120,11 @@
     let list = fn(nodes, dom).flat(Infinity);
     let html = list
       .map((item) => {
+        let idStr = item.id ? `id=${item.id}` : '';
         if (item.color) {
-          return `<span style="color:${item.color};">${item.text}</span>`;
+          return `<span style="color:${item.color};" ${idStr}>${item.text}</span>`;
         }
-        return `<span >${item.text}</span>`;
+        return `<span ${idStr}>${item.text}</span>`;
       })
       .join('');
     return html;
@@ -119,9 +135,14 @@
       if (item.nodeType === 1) {
         arr.push(fn(item.childNodes, item));
       } else {
+        let isFocus = '__focus_tag__' === item.textContent ? true : false;
+        if (isFocus) {
+          focusId += 1;
+        }
         arr.push({
-          text: item.textContent,
+          text: isFocus ? ' ' : item.textContent,
           color: parent.style.color,
+          id: isFocus ? 'focus_id_' + focusId : null,
         });
       }
     });
